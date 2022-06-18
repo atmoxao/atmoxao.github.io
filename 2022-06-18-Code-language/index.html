@@ -249,7 +249,7 @@ sudo mv node-v16.15.1-linux-x64 /usr/local/node
 npm <span style="color:#0086b3">set</span> registry http://registry.npmmirror.com
 </pre><h3>Rust</h3>
 <blockquote>
-<p>主要是一下工具需要用上</p>
+<p>主要是一些工具需要用上</p>
 </blockquote>
 <pre style="background-color:#fff">curl https://sh.rustup.rs -sSf | sh
 
@@ -267,7 +267,72 @@ tee  .cargo/config <span style="color:#d14">&lt;&lt;EOF
 </pre><h3>各类中间件在开发的时候习惯用 docker安装使用</h3>
 <h2>mysql+mysql-admin+redis</h2>
 <p><a href="https://gist.github.com/atmoxao/2cc3be2bdd300b82b4f0e95cd91faa5e">https://gist.github.com/atmoxao/2cc3be2bdd300b82b4f0e95cd91faa5e</a></p>
-
+<pre style="background-color:#fff"><span style="color:#000;font-weight:bold">version</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#39;2.3&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">services</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">mysql</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">restart</span>:<span style="color:#bbb"> </span>always<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>mariadb:<span style="color:#099">10.3</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">container_name</span>:<span style="color:#bbb"> </span>mariadb<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- <span style="color:#d14">&#34;3307:3306&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- ./store/:/var/lib/mysql<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">mem_limit</span>:<span style="color:#bbb"> </span>512m<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">networks</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- mysqlnetwork<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">environment</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- MYSQL_ROOT_PASSWORD=root<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- MYSQL_DATABASE=local<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- MYSQL_USER=root<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- MYSQL_PASSWORD=root<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- PMA_ARBITRARY=<span style="color:#099">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- PMA_HOST=mysql<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- PMA_PORT=<span style="color:#099">3306</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- PMA_USER=root<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- PMA_PASSWORD=root<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">mysql-admin</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">restart</span>:<span style="color:#bbb"> </span>always<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>phpmyadmin/phpmyadmin<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">container_name</span>:<span style="color:#bbb"> </span>mariadb-phpmyadmin<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- <span style="color:#d14">&#34;8001:80&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">mem_limit</span>:<span style="color:#bbb"> </span>512m<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">networks</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- mysqlnetwork<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">depends_on</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- mysql<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">environment</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">PMA_HOST</span>:<span style="color:#bbb"> </span>mysql<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">PMA_PORT</span>:<span style="color:#bbb"> </span><span style="color:#099">3306</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">PMA_USER</span>:<span style="color:#bbb"> </span>root<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">PMA_PASSWORD</span>:<span style="color:#bbb"> </span>root<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">redis-server</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">restart</span>:<span style="color:#bbb"> </span>always<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>redis:<span style="color:#099">4.0</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">container_name</span>:<span style="color:#bbb"> </span>redis-server<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">command</span>:<span style="color:#bbb"> </span>/bin/bash<span style="color:#bbb"> </span>-c<span style="color:#bbb"> </span><span style="color:#d14">&#39;redis-server --appendonly yes&#39;</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">sysctls</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- net.core.somaxconn=<span style="color:#099">65535</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- <span style="color:#d14">&#34;6380:6379&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- ./redis:/data<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">mem_limit</span>:<span style="color:#bbb"> </span>96m<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">networks</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>- mysqlnetwork<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">mysql</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>local<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">redis</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>local<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">networks</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">mysqlnetwork</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>bridge<span style="color:#bbb">
+</span></pre>
     </article>
 
     
